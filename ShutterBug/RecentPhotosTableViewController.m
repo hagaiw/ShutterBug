@@ -8,23 +8,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RecentPhotosTableViewController ()
-@end
-
 @implementation RecentPhotosTableViewController
 
+#pragma mark -
+#pragma mark BaseTableViewController
+#pragma mark -
 
-#pragma mark Overloaded methods
-- (FlickrGetter *)flickrGetter {
+- (id <FlickrGetter>)getFlickrGetter {
   return [[RecentPhotosFlickrGetter alloc] init];
 }
-
 
 - (void)sortCellData {
   // Overload the sort cell data method to maintain the default chronological ordering.
 }
-
-#pragma mark
 
 @end
 

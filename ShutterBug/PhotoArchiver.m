@@ -7,18 +7,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation PhotoArchiver
 
-NSString *const RecentPhotosKey = @"Recent Photos";
-NSUInteger const maxRecentPhotos = 20;
+/// \c NSDefaults key for recent photos.
+static NSString * const kRecentPhotosKey = @"Recent Photos";
 
+/// Maximum number of recent photos to store in \C NSUserDefaults.
+static NSUInteger const kMaxRecentPhotos = 20;
 
+#pragma mark -
 #pragma mark Interface
-- (NSArray *)getRecentPhotos{
+#pragma mark -
+
+- (NSArray *)getRecentPhotos {
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  NSMutableArray *recentPhotos = [defaults objectForKey:RecentPhotosKey];
-  NSMutableArray *recentPhotoDatas = [[NSMutableArray alloc] init];
+  NSMutableArray *recentPhotos = [defaults objectForKey:kRecentPhotosKey];
+  NSMutableArray *recentPhotoDatas = [NSMutableArray arrayWithCapacity:recentPhotos.count];
   for (NSData *data in recentPhotos) {
-    PhotoData *photoData = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    [recentPhotoDatas addObject:photoData];
+    [recentPhotoDatas addObject:[NSKeyedUnarchiver unarchiveObjectWithData:data]];
   }
   return recentPhotoDatas;
 }
@@ -29,46 +33,28 @@ NSUInteger const maxRecentPhotos = 20;
   [self addPhotosToArchive:recentPhotos];
 }
 
-
+#pragma mark -
 #pragma mark Implementation
+#pragma mark -
+
 - (void)addPhotosToArchive:(NSArray *)photos {
-  NSMutableArray *dataArray = [[NSMutableArray alloc] init];
+  NSMutableArray *dataArray = [NSMutableArray arrayWithCapacity:photos.count];
   for (PhotoData *photo in photos) {
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:photo];
-    [dataArray addObject:data];
+    [dataArray addObject:[NSKeyedArchiver archivedDataWithRootObject:photo]];
   }
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   
-  [defaults setObject:dataArray forKey:RecentPhotosKey];
+  [defaults setObject:dataArray forKey:kRecentPhotosKey];
 }
 
 - (NSArray *)getPhotosArray:(NSArray *)photosArray withAddedPhoto:(PhotoData *)photoData {
-  NSMutableArray *mutablePhotosArray = [photosArray mutableCopy];
-  [self removeDuplicatesOfPhotoData:photoData fromArray:mutablePhotosArray];
-  [mutablePhotosArray insertObject:photoData atIndex:0];
-  NSArray *limitedPhotosArray = [self limitSizeOfArray:mutablePhotosArray];
-  return limitedPhotosArray;
+  NSMutableArray *newPhotosArray = [photosArray mutableCopy];
+  [newPhotosArray insertObject:photoData atIndex:0];
+  NSArray *uniquePhotosArray = [[NSOrderedSet orderedSetWithArray:newPhotosArray] array];
+  
+  NSUInteger maxRange = MIN([uniquePhotosArray count], kMaxRecentPhotos);
+  return [uniquePhotosArray subarrayWithRange:NSMakeRange(0, maxRange)];
 }
-
-- (void)removeDuplicatesOfPhotoData:(PhotoData *)photoData fromArray:(NSMutableArray *)photosArray {
-  BOOL existing = NO;
-  PhotoData *currentPhotoData;
-  for (currentPhotoData in photosArray) {
-    if ([[photoData.url absoluteString] isEqualToString:[currentPhotoData.url absoluteString]]) {
-      existing = YES;
-      break;
-    }
-  }
-  if (existing) {
-    [photosArray removeObject:currentPhotoData];
-  }
-}
-
-- (NSArray *)limitSizeOfArray:(NSMutableArray *)array {
-  NSUInteger maxRange = MIN([array count], maxRecentPhotos);
-  return [array subarrayWithRange:NSMakeRange(0, maxRange)];
-}
-#pragma mark
 
 @end
 

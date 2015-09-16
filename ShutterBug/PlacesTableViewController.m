@@ -9,38 +9,37 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PlacesTableViewController ()
-@end
-
 @implementation PlacesTableViewController
 
-NSString *const PlaceSelectionSegue = @"Place Selected";
-NSString *const CellName = @"Data Cell";
+/// Name of segue to PhotoTableViewController.
+static const NSString *PlaceSelectionSegue = @"Place Selected";
 
+/// Name of template cell to use.
+static const NSString *CellName = @"Data Cell";
 
-#pragma mark Overloaded methods
-- (NSArray *)sectionTitlesFromCellsData:(NSDictionary *)cellsData{
+#pragma mark -
+#pragma mark BaseTableViewController
+#pragma mark -
+
+- (NSArray *)sectionTitlesFromCellsData:(NSDictionary *)cellsData {
   return [[cellsData allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 }
 
 - (NSString *)reusableCellName {
-  return CellName;
+  return (NSString *)CellName;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue withCellData:(CellData *)cellData {
-  if ([[segue identifier] isEqualToString:PlaceSelectionSegue])
-  {
+  if ([[segue identifier] isEqualToString:(NSString *)PlaceSelectionSegue]) {
     PhotosAtPlaceTableViewController *photoTableViewController = [segue destinationViewController];
-    
     PlaceData *place = (PlaceData *)cellData;
     photoTableViewController.title = place.cellText;
     photoTableViewController.place = place;
   }
 }
 
-- (FlickrGetter *)flickrGetter {
-  FlickrGetter *flickrGetter = [[TopPlacesFlickrDownloader alloc] init];
-  return flickrGetter;
+- (id <FlickrGetter>)getFlickrGetter {
+  return [[TopPlacesFlickrDownloader alloc] init];
 }
 #pragma mark
 

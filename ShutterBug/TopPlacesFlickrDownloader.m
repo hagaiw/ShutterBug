@@ -9,11 +9,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation TopPlacesFlickrDownloader
 
-NSString *const LocationSeparatorWithStrip = @", ";
-NSString *const LocationSeparator = @",";
+/// Separator to split location string by when stripped output is required.
+static NSString *const LocationSeparatorWithStrip = @", ";
 
+/// Separator to split location string by when no stripping is required.
+static NSString *const LocationSeparator = @",";
 
-#pragma mark Overloaded methods
+#pragma mark -
+#pragma mark Flickr Downloader methods
+#pragma mark -
+
 - (NSURL *)getDownloadURL {
   return [FlickrFetcher URLforTopPlaces];
 }
@@ -22,12 +27,12 @@ NSString *const LocationSeparator = @",";
   NSString *locationName = [flickrData valueForKeyPath:FLICKR_PLACE_NAME];
   NSString *locationID = [flickrData valueForKey:FLICKR_PLACE_ID];
   NSString *country = [self countryFromLocation:locationName];
-  PlaceData *location = [[PlaceData alloc] init];
-  location.name = locationName;
-  location.ID = locationID;
-  location.cellText = [self mostDetailedPartOfLocation:location.name];
-  location.cellDescription = [self regionFromLocation:location.name];
-  location.section = country;
+  PlaceData *location = [[PlaceData alloc]
+                         initWithSection:country
+                                cellText:[self mostDetailedPartOfLocation:locationName]
+                         cellDescription:[self regionFromLocation:locationName]
+                                    name:locationName
+                                      ID:locationID];
   return location;
 }
 
@@ -35,7 +40,10 @@ NSString *const LocationSeparator = @",";
   return FLICKR_RESULTS_PLACES;
 }
 
+#pragma mark -
 #pragma mark Parsing methods
+#pragma mark -
+
 - (NSString *)countryFromLocation:(NSString *)location {
   return [[location componentsSeparatedByString:LocationSeparatorWithStrip] lastObject];
 }

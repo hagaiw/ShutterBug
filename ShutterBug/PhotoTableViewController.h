@@ -6,9 +6,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Represents a BaseTableViewController of photos.
+/// View controller used to present and choose \c PhotoData objects in tabular form.
 @interface PhotoTableViewController : BaseTableViewController
-
 @end
 
 NS_ASSUME_NONNULL_END

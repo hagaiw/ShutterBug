@@ -5,10 +5,21 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// An abstract data-structure that represents the data corresponding to a single cell in a places Table-View.
+/// Value class representing the data of a cell used in a \c UITableView depicting places.
 @interface PlaceData : CellData
-@property (strong, nonatomic) NSString *name;
-@property (strong, nonatomic) NSString *ID;
+
+/// Value class initializer.
+- (instancetype)initWithSection:(NSString * __nonnull)section
+                       cellText:(NSString * __nonnull)cellText
+                cellDescription:(NSString * __nonnull)cellDescription
+                           name:(NSString *)name
+                             ID:(NSString *)ID;
+
+// The name of the place as received from flickr.
+@property (strong, readonly, nonatomic) NSString *name;
+
+// The Flickr-ID of the place.
+@property (strong, readonly, nonatomic) NSString *ID;
 @end
 
 NS_ASSUME_NONNULL_END

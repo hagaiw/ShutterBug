@@ -6,16 +6,23 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BaseTableViewController ()
+
+/// Section title's in order.
 @property (strong, nonatomic)NSArray *sectionTitles;
+
+/// Maps section-title to an \c NSArray of \c CellData
 @property (strong, nonatomic)NSDictionary *tableData;
+
 @end
 
 @implementation BaseTableViewController
 
-
+/// Name of the dispatch queue used to acquire table's data.
 const char* queueName = "flickr fetcher";
 
+#pragma mark -
 #pragma mark UIViewController
+#pragma mark -
 
 - (void)viewDidLoad {
   [super viewDidLoad];
@@ -28,15 +35,16 @@ const char* queueName = "flickr fetcher";
   [self prepareForSegue:segue withCellData:cellData];
 }
 
-
+#pragma mark -
 #pragma mark Initialization
+#pragma mark -
 
 - (IBAction)updateCellData {
   [self.refreshControl beginRefreshing];
   
   dispatch_queue_t fetchQ = dispatch_queue_create(queueName, NULL);
   dispatch_async(fetchQ, ^{
-    self.tableData = [self.flickrGetter getTableData];
+    self.tableData = [self.getFlickrGetter getTableData];
     [self sortCellData];
     dispatch_async(dispatch_get_main_queue(), ^{
       [self initTableView];
@@ -46,34 +54,34 @@ const char* queueName = "flickr fetcher";
 }
 
 - (void)sortCellData {
-  NSMutableDictionary *sectionToCellsDict = [[NSMutableDictionary alloc] init];
-  for (NSString *title in _tableData) {
-    sectionToCellsDict[title] = [ _tableData[title] sortedArrayUsingSelector:@selector(compare:)];
+  NSMutableDictionary *sectionToCells =
+      [NSMutableDictionary dictionaryWithCapacity:self.tableData.count];
+  for (NSString *title in self.tableData) {
+    sectionToCells[title] = [ self.tableData[title] sortedArrayUsingSelector:@selector(compare:)];
   }
-  _tableData = sectionToCellsDict;
+  self.tableData = sectionToCells;
 }
 
 - (void)initTableView {
-  _sectionTitles = [self sectionTitlesFromCellsData:_tableData];
+  self.sectionTitles = [self sectionTitlesFromCellsData:_tableData];
   [self.tableView reloadData];
 }
 
 - (CellData *)cellDataFromIndexPath:(NSIndexPath *)indexPath {
-  NSString *sectionTitle = _sectionTitles[indexPath.section];
-  CellData *cellData = _tableData[sectionTitle][indexPath.row];
+  NSString *sectionTitle = self.sectionTitles[indexPath.section];
+  CellData *cellData = self.tableData[sectionTitle][indexPath.row];
   return cellData;
 }
 
+#pragma mark -
 #pragma mark UITableViewController
+#pragma mark -
 
 - (UITableViewCell *)tableView:(UITableView *)sender
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  
   UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:[self reusableCellName]
                                                                forIndexPath:indexPath];
-  
   CellData *cellData = [self getCellDataFromIndexPath:indexPath];
-  
   cell.textLabel.text = cellData.cellText;
   cell.detailTextLabel.text = cellData.cellDescription;
   
@@ -84,8 +92,7 @@ const char* queueName = "flickr fetcher";
   return [_sectionTitles count];
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
   return [_sectionTitles objectAtIndex:section];
 }
 
@@ -102,23 +109,24 @@ const char* queueName = "flickr fetcher";
   return cellData;
 }
 
-
+#pragma mark -
 #pragma mark Abstract methods
+#pragma mark -
 
-- (UITableViewCell *)getCellforIndexPath:(NSIndexPath *)indexPath cellData:(CellData *)cellData {
+- (UITableViewCell *)getCellforIndexPath:(NSIndexPath __unused *)indexPath cellData:(CellData *)cellData {
   assert(NO);
 }
-- (NSArray *)sectionTitlesFromCellsData:(NSDictionary *)cellsData {
+- (NSArray *)sectionTitlesFromCellsData:(NSDictionary __unused *)cellsData {
   assert(NO);
 }
-- (void)prepareForSegue:(UIStoryboardSegue *)segue
-           withCellData:(CellData *)cellData {
+- (void)prepareForSegue:(UIStoryboardSegue __unused *)segue
+           withCellData:(CellData __unused *)cellData {
   assert(NO);
 }
 - (NSString *)reusableCellName {
   assert(NO);
 }
-- (FlickrGetter *)flickrGetter {
+- (id <FlickrGetter>)getFlickrGetter {
   assert(NO);
 }
 @end

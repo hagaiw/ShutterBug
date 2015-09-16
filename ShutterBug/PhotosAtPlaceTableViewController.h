@@ -5,9 +5,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Represents a BaseTableViewController of photos at place.
+/// A \c UITableViewController of photos at a place.
 @interface PhotosAtPlaceTableViewController : PhotoTableViewController
+
+/// The place where all of the presented photos were taken at.
 @property (strong, nonatomic) PlaceData *place;
+
 @end
 
 NS_ASSUME_NONNULL_END

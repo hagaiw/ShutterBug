@@ -7,54 +7,56 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface PhotosAtPlaceFlickrDownloader ()
+/// The place to download photos for.
+@property (strong, nonatomic) PlaceData *place;
+@end
+
 @implementation PhotosAtPlaceFlickrDownloader
 
-NSUInteger const MaxNumResults = 50;
+/// Maximum number of photo-results to request for the given place.
+const NSUInteger MaxNumResults = 50;
 
+/// Image title to show when no title is available.
+const NSString *DefaultImageTitle = @"Unknown";
+
+#pragma mark -
 #pragma mark Initialization
+#pragma mark -
+
 - (instancetype)initWithPlace:(PlaceData *)place {
-  self = [super init];
-  self.place = place;
+  if (self = [super init]) {
+    self.place = place;
+  }
   return self;
 }
 
-#pragma mark Overloaded methods
+#pragma mark -
+#pragma mark FlickrDownloader
+#pragma mark -
+
 - (NSURL *)getDownloadURL {
-  return [FlickrFetcher URLforPhotosInPlace:_place.ID maxResults:(int)MaxNumResults];
+  return [FlickrFetcher URLforPhotosInPlace:self.place.ID maxResults:(int)MaxNumResults];
 }
 
 - (CellData *)cellDataFromFlickrData:(NSDictionary *)flickrData{
   NSString *photoTitle = [flickrData valueForKeyPath:FLICKR_PHOTO_TITLE];
   NSString *photoDescription = [flickrData valueForKey:FLICKR_PHOTO_DESCRIPTION];
   NSURL *photoURL = [FlickrFetcher URLforPhoto:flickrData format:FlickrPhotoFormatLarge];
-  PhotoData *photoData = [[PhotoData alloc] init];
-  photoData.title = photoTitle;
-  photoData.photoDescription = photoDescription;
-  photoData.url = photoURL;
-  [self setPhotoData:photoData fromTitle:photoTitle andDescription:photoDescription];
+  NSString *section = @"";
+  NSString *cellText = photoTitle ? photoTitle : DefaultImageTitle;
+  PhotoData *photoData = [[PhotoData alloc] initWithSection:section
+                                                   cellText:cellText
+                                            cellDescription:photoDescription
+                                                      title:photoTitle
+                                           photoDescription:photoDescription
+                                                        url:photoURL];
   return photoData;
 }
 
 - (NSString *)getDataDictKey {
   return FLICKR_RESULTS_PHOTOS;
 }
-
-#pragma mark Implementation.
-- (void)setPhotoData:(PhotoData *)photoData fromTitle:(NSString *)title andDescription:(NSString *)description {
-  if(title && ![title isEqualToString:@""]) {
-    photoData.cellText = title;
-    photoData.cellDescription = description;
-  } else if(description) {
-    photoData.cellText = description;
-    photoData.cellDescription = @"";
-  } else {
-    photoData.cellText = @"Unknown";
-    photoData.cellDescription = @"";
-  }
-  photoData.section = @"";
-}
-
-
 @end
 
 NS_ASSUME_NONNULL_END

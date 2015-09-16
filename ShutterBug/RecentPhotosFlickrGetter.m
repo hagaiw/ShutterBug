@@ -10,7 +10,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation RecentPhotosFlickrGetter
 
-#pragma mark Overloaded methods
+#pragma mark -
+#pragma mark FlickrGetter
+#pragma mark -
+
 - (NSDictionary *)getTableData {
   PhotoArchiver *archiver = [[PhotoArchiver alloc] init];
   return [[NSDictionary alloc] initWithObjectsAndKeys:[archiver getRecentPhotos], @"Unknown", nil];

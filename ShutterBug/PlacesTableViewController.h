@@ -5,9 +5,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Represents a BaseTableViewController of places.
+/// View controller used to present and choose \c PlaceData objects in tabular form.
 @interface PlacesTableViewController : BaseTableViewController
-
 @end
 
 NS_ASSUME_NONNULL_END

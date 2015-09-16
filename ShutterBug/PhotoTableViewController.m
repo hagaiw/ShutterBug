@@ -9,43 +9,30 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-
 @implementation PhotoTableViewController
 
-NSString *const PhotoSelectionSegue = @"Photo Selected";
-NSString *const PhotoCellName = @"Photo Cell";
+/// Name of segue to \cc PhotoViewController.
+const NSString *PhotoSelectionSegue = @"Photo Selected";
 
-#pragma mark Overloaded methods
+/// Name of template \c UITableView cell to use.
+const NSString *PhotoCellName = @"Photo Cell";
+
+/// ID of the detail view controller of the \c SplitViewController.
+const NSInteger SplitViewControllerDetailID = 1;
+
+/// ID of the \c PhotoViewController under the \c NavigationViewController.
+const NSInteger PhotoViewControllerNavigationID = 0;
+
+#pragma mark -
+#pragma mark BaseTableViewController
+#pragma mark -
 
 - (NSArray *)sectionTitlesFromCellsData:(NSDictionary *)cellsData {
   return [[cellsData allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 }
 
 - (NSString *)reusableCellName {
-  return PhotoCellName;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-  UINavigationController *navDetail = self.splitViewController.viewControllers[1];
-  if(!navDetail) {
-    return;
-  }
-  PhotoViewController *photoViewcontroller = navDetail.viewControllers[0];
-  PhotoData *photoData = (PhotoData *)[self getCellDataFromIndexPath:indexPath];
-  photoViewcontroller.imageURL = photoData.url;
-  [self updateViewController:photoViewcontroller fromCellData:photoData];
-}
-
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue
-           withCellData:(CellData *)cellData {
-  if ([[segue identifier] isEqualToString:PhotoSelectionSegue])
-  {
-    PhotoViewController *photoViewController = [segue destinationViewController];
-    PhotoData *photoData = (PhotoData *)cellData;
-    [self updateViewController:photoViewController fromCellData:photoData];
-  }
+  return (NSString *)PhotoCellName;
 }
 
 - (void)updateViewController:(PhotoViewController *)photoVC fromCellData:(PhotoData *)photoData {
@@ -55,12 +42,39 @@ NSString *const PhotoCellName = @"Photo Cell";
   [archiver addPhotoData:photoData];
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+#pragma mark -
+#pragma mark UITableViewController
+#pragma mark -
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+  UINavigationController *navDetail =
+      self.splitViewController.viewControllers[SplitViewControllerDetailID];
+  if(!navDetail) {
+    return;
+  }
+  PhotoViewController *photoViewController =
+      navDetail.viewControllers[PhotoViewControllerNavigationID];
+  PhotoData *photoData = (PhotoData *)[self getCellDataFromIndexPath:indexPath];
+  photoViewController.imageURL = photoData.url;
+  [self updateViewController:photoViewController fromCellData:photoData];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
   return nil;
 }
 
-#pragma mark
+#pragma mark -
+#pragma mark UIView
+#pragma mark -
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue
+           withCellData:(CellData *)cellData {
+  if ([[segue identifier] isEqualToString:(NSString *)PhotoSelectionSegue]) {
+    PhotoViewController *photoViewController = [segue destinationViewController];
+    PhotoData *photoData = (PhotoData *)cellData;
+    [self updateViewController:photoViewController fromCellData:photoData];
+  }
+}
 
 @end
 

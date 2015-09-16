@@ -7,13 +7,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PhotosAtPlaceTableViewController ()
-@end
-
 @implementation PhotosAtPlaceTableViewController
 
-#pragma mark Overloaded methods
-- (FlickrGetter *)flickrGetter {
+#pragma mark -
+#pragma mark BaseTableViewController
+#pragma mark -
+
+- (id <FlickrGetter>)getFlickrGetter {
   return [[PhotosAtPlaceFlickrDownloader alloc] initWithPlace:_place];
 }
 #pragma mark

@@ -5,9 +5,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Displays a single image by url, auto fits it to scroll-view.
+/// View controller displaying an image in a \c UIScrollView. The image is retrieved from a given
+/// URL and initially aspect-fills the scroll view.
 @interface PhotoViewController : UIViewController
+
+/// URL of the image to be displayed.
 @property (nonatomic, strong) NSURL *imageURL;
+
 @end
 
 NS_ASSUME_NONNULL_END

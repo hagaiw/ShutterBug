@@ -8,14 +8,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Abstract class. Represents a generic Table-View controller for a table-view with of subtitle-cells with sections.
+/// Abstract class. Represents a generic Table-View controller for a table-view with of
+/// subtitle-cells with sections.
 @interface BaseTableViewController : UITableViewController
 
-// Abstract method, converts returns the cell data object corresponding to the cell represented by
-// indexPath.
+/// Abstract method. Returns the data of the cell at the given \c indexPath.
 - (CellData *)getCellDataFromIndexPath:(NSIndexPath *)indexPath;
-
-@property (strong, nonatomic) FlickrGetter *flickrGetter;
 
 @end
 

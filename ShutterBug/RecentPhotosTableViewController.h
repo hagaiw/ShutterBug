@@ -5,9 +5,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Represents a BaseTableViewController of recently accessed photos.
+/// View controller used to present and choose recently accessed \c PhotoData objects in tabular
+/// form.
 @interface RecentPhotosTableViewController : PhotoTableViewController
-
 @end
 
 NS_ASSUME_NONNULL_END

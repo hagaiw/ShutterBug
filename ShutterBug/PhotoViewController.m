@@ -9,15 +9,26 @@
 #import "PhotoViewController.h"
 
 @interface PhotoViewController () <UIScrollViewDelegate, UISplitViewControllerDelegate>
+
+/// The image to display.
 @property (nonatomic, strong) UIImage *image;
+
+/// \c UIImageView in which the image will be displayed.
 @property (nonatomic, strong) UIImageView *imageView;
+
+/// \c UIScrollView in which the image view is embedded.
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+
+/// \c spinner object that indicates that the image is loading.
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+
 @end
 
 @implementation PhotoViewController
 
-#pragma mark - View Controller Lifecycle
+#pragma mark -
+#pragma mark UIViewController
+#pragma mark -
 
 - (void)viewDidLoad
 {
@@ -32,10 +43,12 @@
 
 - (void) orientationChanged:(NSNotification *)note
 {
-  [self setScrollViewZoom];
+  [self setScrollViewZoomRect];
 }
 
-#pragma mark - Properties
+#pragma mark -
+#pragma mark Setter Methods
+#pragma mark -
 
 - (UIImageView *)imageView
 {
@@ -55,7 +68,7 @@
   self.imageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
   [self.spinner stopAnimating];
   
-  [self setScrollViewZoom];
+  [self setScrollViewZoomRect];
 }
 
 - (void)setScrollView:(UIScrollView *)scrollView
@@ -66,28 +79,37 @@
   _scrollView.maximumZoomScale = 2.0;
   _scrollView.delegate = self;
   
-  [self setScrollViewZoom];
+  [self setScrollViewZoomRect];
 }
 
 
-#pragma mark Display
+#pragma mark -
+#pragma mark Image Placement Handling
+#pragma mark -
 
-- (void)setScrollViewZoom {
+- (void)setScrollViewZoomRect {
   self.scrollView.contentSize = self.image ? self.image.size : CGSizeZero;
   
-  CGFloat screenRatio = [self.scrollView bounds].size.width / [self.scrollView bounds].size.height;
-  CGFloat imageRatio = self.image.size.width / self.image.size.height;
+  CGFloat screenWidthHeightRatio =
+      [self.scrollView bounds].size.width / [self.scrollView bounds].size.height;
+  CGFloat imageWidthHeightRatio = self.image.size.width / self.image.size.height;
   
   CGFloat zoomRectWidth;
   CGFloat zoomRectHeight;
   
-  if(screenRatio < imageRatio) {
-    zoomRectWidth = self.image.size.height*screenRatio;
+  // Check which dimension of the photo needs to fit the screen.
+  // If the screen's width/height ratio is smaller then the image's, setting the zoom-rect's
+  // height to the image's height assures us that no empty space will be displayed.
+  // Otherwise, the zoom-rect's width need to be set to the image's width.
+  if(screenWidthHeightRatio < imageWidthHeightRatio) {
+    zoomRectWidth = self.image.size.height*screenWidthHeightRatio;
     zoomRectHeight = self.image.size.height;
   } else {
     zoomRectWidth = self.image.size.width;
-    zoomRectHeight = self.image.size.width / screenRatio;
+    zoomRectHeight = self.image.size.width / screenWidthHeightRatio;
   }
+  
+  // Set the zoom-rect's  position so as to frame the center of the image.
   CGFloat zoomRectX = self.image.size.width/2 - zoomRectWidth/2;
   CGFloat zoomRectY = self.image.size.height/2 - zoomRectHeight/2;
   
@@ -95,14 +117,18 @@
   [self.scrollView zoomToRect:zoomRect animated:NO];
 }
 
-#pragma mark - UIScrollViewDelegate
+#pragma mark -
+#pragma mark UIScrollViewDelegate
+#pragma mark -
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
   return self.imageView;
 }
 
-#pragma mark - Setting the Image from the Image's URL
+#pragma mark -
+#pragma mark Setting the Image from the Image's URL
+#pragma mark -
 
 - (void)setImageURL:(NSURL *)imageURL
 {
@@ -134,7 +160,9 @@
   }
 }
 
-#pragma mark - UISplitViewControllerDelegate
+#pragma mark -
+#pragma mark UISplitViewControllerDelegate
+#pragma mark -
 
 // this section added during Shutterbug demo
 

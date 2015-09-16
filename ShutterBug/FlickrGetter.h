@@ -5,12 +5,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Abstract class. Parses flickr meta data to create a data structure describing a Table-View with sections.
-@interface FlickrGetter : NSObject
+/// A protocol for classes that parse flickr meta-data to create a dictionary that maps
+/// sections to cell-arrays.
+@protocol FlickrGetter <NSObject>
 
-// returns a dictionary representing all table data. keys are section-titles and values are
-// (CellData *) array.
+/// Returns a dictionary mapping section titles to arrays of \c CellData objects.
 - (NSDictionary *)getTableData;
+
 @end
 
 NS_ASSUME_NONNULL_END

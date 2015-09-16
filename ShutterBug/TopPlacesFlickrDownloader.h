@@ -5,9 +5,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Downloads and parses flickr meta data to create a data structure describing a Table-View of top photo taking places.
+// Obtains and Parses top flickr places.
 @interface TopPlacesFlickrDownloader : FlickrDownloader
-
 @end
 
 NS_ASSUME_NONNULL_END

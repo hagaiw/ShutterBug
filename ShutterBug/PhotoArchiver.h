@@ -7,14 +7,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// In charge of archiving and de-archiving photo data to the user's defaults.
+/// Object for archiving/de-archiving photo data to/from \c NSUserDefaults.
 @interface PhotoArchiver : NSObject
 
-// Returns a list of photo-data objects represnting the most recent photos accessed in a chronological order
+/// Returns a list of photo-data objects representing the most recent photos accessed in a
+/// chronological order
 - (NSArray *)getRecentPhotos;
 
-// Adds the given photo-data object to the archive
+/// Adds the given photo-data object to the archive.
 - (void)addPhotoData:(PhotoData *)photoData;
+
 @end
 
 NS_ASSUME_NONNULL_END
