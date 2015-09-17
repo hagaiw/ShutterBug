@@ -5,8 +5,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// Value class representing the data of a cell used in a \c UITableView for depicting flickr
-/// photos.
+/// Initializes with the given \c section, \c cellText, \c cellDescription, \c title,
+/// \c photoDescription and \c url.
 @interface PhotoData : CellData
 
 /// Value class intializer.
@@ -18,13 +18,13 @@ NS_ASSUME_NONNULL_BEGIN
                             url:(NSURL *)url;
 
 /// The photo's title, as received from flickr.
-@property (strong, readonly, nonatomic) NSString *title;
+@property (readonly, nonatomic) NSString *title;
 
 /// The photo's description, as received from flickr.
-@property (strong, readonly, nonatomic) NSString *photoDescription;
+@property (readonly, nonatomic) NSString *photoDescription;
 
 /// The photo's URL, as received from flickr.
-@property (strong, readonly, nonatomic) NSURL *url;
+@property (readonly, nonatomic) NSURL *url;
 
 @end
 

@@ -8,18 +8,17 @@ NS_ASSUME_NONNULL_BEGIN
 /// Value class representing the data of a cell used in a \c UITableView depicting places.
 @interface PlaceData : CellData
 
-/// Value class initializer.
-- (instancetype)initWithSection:(NSString * __nonnull)section
-                       cellText:(NSString * __nonnull)cellText
-                cellDescription:(NSString * __nonnull)cellDescription
-                           name:(NSString *)name
+/// Initializes with the give \c section, \c cellText, \c cellDescription, \c name and \c ID.
+- (instancetype)initWithSection:(NSString *)section cellText:(NSString *)cellText
+                cellDescription:(NSString *)cellDescription name:(NSString *)name
                              ID:(NSString *)ID;
 
 // The name of the place as received from flickr.
-@property (strong, readonly, nonatomic) NSString *name;
+@property (readonly, nonatomic) NSString *name;
 
 // The Flickr-ID of the place.
-@property (strong, readonly, nonatomic) NSString *ID;
+@property (readonly, nonatomic) NSString *ID;
+
 @end
 
 NS_ASSUME_NONNULL_END

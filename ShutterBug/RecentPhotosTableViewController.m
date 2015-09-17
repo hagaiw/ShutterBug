@@ -18,8 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
   return [[RecentPhotosFlickrGetter alloc] init];
 }
 
-- (void)sortCellData {
-  // Overload the sort cell data method to maintain the default chronological ordering.
+- (NSDictionary *)sortedCellDataFromCellData:(NSDictionary *)cellData {
+  return cellData;
 }
 
 @end

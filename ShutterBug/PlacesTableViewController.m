@@ -25,12 +25,12 @@ static const NSString *CellName = @"Data Cell";
   return [[cellsData allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 }
 
-- (NSString *)reusableCellName {
+- (NSString *)identifierOfReusableCell {
   return (NSString *)CellName;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue withCellData:(CellData *)cellData {
-  if ([[segue identifier] isEqualToString:(NSString *)PlaceSelectionSegue]) {
+  if ([segue.identifier isEqualToString:(NSString *)PlaceSelectionSegue]) {
     PhotosAtPlaceTableViewController *photoTableViewController = [segue destinationViewController];
     PlaceData *place = (PlaceData *)cellData;
     photoTableViewController.title = place.cellText;

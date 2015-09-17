@@ -12,16 +12,16 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation PhotoTableViewController
 
 /// Name of segue to \cc PhotoViewController.
-const NSString *PhotoSelectionSegue = @"Photo Selected";
+static const NSString *kPhotoSelectionSegue = @"Photo Selected";
 
 /// Name of template \c UITableView cell to use.
-const NSString *PhotoCellName = @"Photo Cell";
+static const NSString *kPhotoCellName = @"Photo Cell";
 
 /// ID of the detail view controller of the \c SplitViewController.
-const NSInteger SplitViewControllerDetailID = 1;
+static const NSInteger kSplitViewControllerDetailID = 1;
 
 /// ID of the \c PhotoViewController under the \c NavigationViewController.
-const NSInteger PhotoViewControllerNavigationID = 0;
+static const NSInteger kPhotoViewControllerNavigationID = 0;
 
 #pragma mark -
 #pragma mark BaseTableViewController
@@ -31,8 +31,8 @@ const NSInteger PhotoViewControllerNavigationID = 0;
   return [[cellsData allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 }
 
-- (NSString *)reusableCellName {
-  return (NSString *)PhotoCellName;
+- (NSString *)identifierOfReusableCell {
+  return (NSString *)kPhotoCellName;
 }
 
 - (void)updateViewController:(PhotoViewController *)photoVC fromCellData:(PhotoData *)photoData {
@@ -48,13 +48,13 @@ const NSInteger PhotoViewControllerNavigationID = 0;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   UINavigationController *navDetail =
-      self.splitViewController.viewControllers[SplitViewControllerDetailID];
+      self.splitViewController.viewControllers[kSplitViewControllerDetailID];
   if(!navDetail) {
     return;
   }
   PhotoViewController *photoViewController =
-      navDetail.viewControllers[PhotoViewControllerNavigationID];
-  PhotoData *photoData = (PhotoData *)[self getCellDataFromIndexPath:indexPath];
+      navDetail.viewControllers[kPhotoViewControllerNavigationID];
+  PhotoData *photoData = (PhotoData *)[self cellDataFromIndexPath:indexPath];
   photoViewController.imageURL = photoData.url;
   [self updateViewController:photoViewController fromCellData:photoData];
 }
@@ -69,7 +69,7 @@ const NSInteger PhotoViewControllerNavigationID = 0;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue
            withCellData:(CellData *)cellData {
-  if ([[segue identifier] isEqualToString:(NSString *)PhotoSelectionSegue]) {
+  if ([[segue identifier] isEqualToString:(NSString *)kPhotoSelectionSegue]) {
     PhotoViewController *photoViewController = [segue destinationViewController];
     PhotoData *photoData = (PhotoData *)cellData;
     [self updateViewController:photoViewController fromCellData:photoData];

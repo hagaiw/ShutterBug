@@ -10,8 +10,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Object for archiving/de-archiving photo data to/from \c NSUserDefaults.
 @interface PhotoArchiver : NSObject
 
-/// Returns a list of photo-data objects representing the most recent photos accessed in a
-/// chronological order
+/// Returns an ordered collection of \c PhotoData objects representing the most recent photos
+/// accessed in a chronological order.
 - (NSArray *)getRecentPhotos;
 
 /// Adds the given photo-data object to the archive.

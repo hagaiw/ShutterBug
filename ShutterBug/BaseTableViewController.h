@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface BaseTableViewController : UITableViewController
 
 /// Abstract method. Returns the data of the cell at the given \c indexPath.
-- (CellData *)getCellDataFromIndexPath:(NSIndexPath *)indexPath;
+- (CellData *)cellDataFromIndexPath:(NSIndexPath *)indexPath;
 
 @end
 

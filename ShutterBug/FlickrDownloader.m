@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
   NSMutableDictionary *tableData = [[NSMutableDictionary alloc] init];
   NSArray *cellDataArray = [self cellDataArrayFromFlickrData:flickrData];
   for (CellData *cellData in cellDataArray) {
-    [self addCellData:cellData toDataDict:tableData];
+    tableData[cellData.section] = [self cellsForCellData:cellData inTableData:tableData];
   }
   return tableData;
 }
@@ -30,8 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSDictionary *)getFlickrDataFromURL:(NSURL *)url {
   NSData *jsonResults = [NSData dataWithContentsOfURL:url];
-  NSDictionary *propertyListResults = [NSJSONSerialization JSONObjectWithData:jsonResults
-                                                                      options:0
+  NSDictionary *propertyListResults = [NSJSONSerialization JSONObjectWithData:jsonResults options:0
                                                                         error:NULL];
   return propertyListResults;
 }
@@ -45,12 +44,12 @@ NS_ASSUME_NONNULL_BEGIN
   return cellDataArray;
 }
 
-- (void)addCellData:(CellData *)cellData toDataDict:(NSMutableDictionary *)dataDictionary {
-  if (!dataDictionary[cellData.section]) {
-    dataDictionary[cellData.section] = @[];
+- (NSArray *)cellsForCellData:(CellData *)cellData inTableData:(NSDictionary *)tableData {
+  NSArray *cells = tableData[cellData.section];
+  if (!cells) {
+    cells = @[];
   }
-  dataDictionary[cellData.section] =
-      [dataDictionary[cellData.section] arrayByAddingObject:cellData];
+  return [cells arrayByAddingObject:cellData];
 }
 
 #pragma mark -

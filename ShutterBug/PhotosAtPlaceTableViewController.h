@@ -5,7 +5,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// A \c UITableViewController of photos at a place.
+/// \c UITableViewController used to depict photos taken at a specific place.
 @interface PhotosAtPlaceTableViewController : PhotoTableViewController
 
 /// The place where all of the presented photos were taken at.

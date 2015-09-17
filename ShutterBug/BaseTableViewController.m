@@ -7,18 +7,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BaseTableViewController ()
 
-/// Section title's in order.
-@property (strong, nonatomic)NSArray *sectionTitles;
+/// Section titles in order of display.
+@property (strong, nonatomic) NSArray *sectionTitles;
 
-/// Maps section-title to an \c NSArray of \c CellData
-@property (strong, nonatomic)NSDictionary *tableData;
+/// Dictionary maping section titles to \c NSArrays of \c CellData
+@property (strong, nonatomic) NSDictionary *tableData;
 
 @end
 
 @implementation BaseTableViewController
 
 /// Name of the dispatch queue used to acquire table's data.
-const char* queueName = "flickr fetcher";
+static NSString * const queueName = @"flickr fetcher";
 
 #pragma mark -
 #pragma mark UIViewController
@@ -42,10 +42,10 @@ const char* queueName = "flickr fetcher";
 - (IBAction)updateCellData {
   [self.refreshControl beginRefreshing];
   
-  dispatch_queue_t fetchQ = dispatch_queue_create(queueName, NULL);
-  dispatch_async(fetchQ, ^{
+  dispatch_queue_t fetchQueue = dispatch_queue_create([queueName UTF8String], NULL);
+  dispatch_async(fetchQueue, ^{
     self.tableData = [self.getFlickrGetter getTableData];
-    [self sortCellData];
+    self.tableData = [self sortedCellDataFromCellData:self.tableData];
     dispatch_async(dispatch_get_main_queue(), ^{
       [self initTableView];
       [self.refreshControl endRefreshing];
@@ -53,13 +53,13 @@ const char* queueName = "flickr fetcher";
   });
 }
 
-- (void)sortCellData {
+- (NSDictionary *)sortedCellDataFromCellData:(NSDictionary *)cellData {
   NSMutableDictionary *sectionToCells =
-      [NSMutableDictionary dictionaryWithCapacity:self.tableData.count];
-  for (NSString *title in self.tableData) {
-    sectionToCells[title] = [ self.tableData[title] sortedArrayUsingSelector:@selector(compare:)];
+      [NSMutableDictionary dictionaryWithCapacity:cellData.count];
+  for (NSString *title in [cellData allKeys]) {
+    sectionToCells[title] = [cellData[title] sortedArrayUsingSelector:@selector(compare:)];
   }
-  self.tableData = sectionToCells;
+  return sectionToCells;
 }
 
 - (void)initTableView {
@@ -69,8 +69,7 @@ const char* queueName = "flickr fetcher";
 
 - (CellData *)cellDataFromIndexPath:(NSIndexPath *)indexPath {
   NSString *sectionTitle = self.sectionTitles[indexPath.section];
-  CellData *cellData = self.tableData[sectionTitle][indexPath.row];
-  return cellData;
+  return self.tableData[sectionTitle][indexPath.row];
 }
 
 #pragma mark -
@@ -79,7 +78,7 @@ const char* queueName = "flickr fetcher";
 
 - (UITableViewCell *)tableView:(UITableView *)sender
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:[self reusableCellName]
+  UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:[self identifierOfReusableCell]
                                                                forIndexPath:indexPath];
   CellData *cellData = [self getCellDataFromIndexPath:indexPath];
   cell.textLabel.text = cellData.cellText;
@@ -89,46 +88,49 @@ const char* queueName = "flickr fetcher";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)sender {
-  return [_sectionTitles count];
+  return [self.sectionTitles count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-  return [_sectionTitles objectAtIndex:section];
+  return [self.sectionTitles objectAtIndex:section];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  NSString *sectionTitle = [_sectionTitles objectAtIndex:section];
-  return [_tableData[sectionTitle] count];
+  NSString *sectionTitle = [self.sectionTitles objectAtIndex:section];
+  return [self.tableData[sectionTitle] count];
 }
 
-
 - (CellData *)getCellDataFromIndexPath:(NSIndexPath *)indexPath {
-  NSString *section = [_sectionTitles objectAtIndex:indexPath.section];
-  NSArray *sectionCells = [_tableData objectForKey:section];
-  CellData *cellData = [sectionCells objectAtIndex:indexPath.row];
-  return cellData;
+  NSString *section = [self.sectionTitles objectAtIndex:indexPath.section];
+  NSArray *sectionCells = [self.tableData objectForKey:section];
+  return [sectionCells objectAtIndex:indexPath.row];
 }
 
 #pragma mark -
 #pragma mark Abstract methods
 #pragma mark -
 
-- (UITableViewCell *)getCellforIndexPath:(NSIndexPath __unused *)indexPath cellData:(CellData *)cellData {
+- (UITableViewCell *)cellforIndexPath:(NSIndexPath __unused *)indexPath cellData:(CellData *)cellData {
   assert(NO);
 }
+
 - (NSArray *)sectionTitlesFromCellsData:(NSDictionary __unused *)cellsData {
   assert(NO);
 }
+
 - (void)prepareForSegue:(UIStoryboardSegue __unused *)segue
            withCellData:(CellData __unused *)cellData {
   assert(NO);
 }
-- (NSString *)reusableCellName {
+
+- (NSString *)identifierOfReusableCell {
   assert(NO);
 }
-- (id <FlickrGetter>)getFlickrGetter {
+
+- (id<FlickrGetter>)getFlickrGetter {
   assert(NO);
 }
+
 @end
 
 NS_ASSUME_NONNULL_END

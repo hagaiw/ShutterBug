@@ -27,13 +27,10 @@ static NSString *const LocationSeparator = @",";
   NSString *locationName = [flickrData valueForKeyPath:FLICKR_PLACE_NAME];
   NSString *locationID = [flickrData valueForKey:FLICKR_PLACE_ID];
   NSString *country = [self countryFromLocation:locationName];
-  PlaceData *location = [[PlaceData alloc]
-                         initWithSection:country
-                                cellText:[self mostDetailedPartOfLocation:locationName]
-                         cellDescription:[self regionFromLocation:locationName]
-                                    name:locationName
-                                      ID:locationID];
-  return location;
+  return [[PlaceData alloc]
+          initWithSection:country cellText:[self mostDetailedPartOfLocation:locationName]
+          cellDescription:[self regionFromLocation:locationName] name:locationName
+          ID:locationID];
 }
 
 - (NSString *)getDataDictKey {
@@ -58,7 +55,7 @@ static NSString *const LocationSeparator = @",";
   NSArray *splitRegionWithoutCountry = [splitRegion subarrayWithRange:range];
   return [splitRegionWithoutCountry componentsJoinedByString:LocationSeparator];
 }
-#pragma mark
+
 @end
 
 NS_ASSUME_NONNULL_END

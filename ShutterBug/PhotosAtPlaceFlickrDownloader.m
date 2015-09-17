@@ -8,8 +8,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PhotosAtPlaceFlickrDownloader ()
+
 /// The place to download photos for.
 @property (strong, nonatomic) PlaceData *place;
+
 @end
 
 @implementation PhotosAtPlaceFlickrDownloader
@@ -44,13 +46,10 @@ const NSString *DefaultImageTitle = @"Unknown";
   NSString *photoDescription = [flickrData valueForKey:FLICKR_PHOTO_DESCRIPTION];
   NSURL *photoURL = [FlickrFetcher URLforPhoto:flickrData format:FlickrPhotoFormatLarge];
   NSString *section = @"";
-  NSString *cellText = photoTitle ? photoTitle : DefaultImageTitle;
-  PhotoData *photoData = [[PhotoData alloc] initWithSection:section
-                                                   cellText:cellText
-                                            cellDescription:photoDescription
-                                                      title:photoTitle
-                                           photoDescription:photoDescription
-                                                        url:photoURL];
+  NSString *cellText = photoTitle ?: DefaultImageTitle;
+  PhotoData *photoData = [[PhotoData alloc] initWithSection:section cellText:cellText
+                                            cellDescription:photoDescription title:photoTitle
+                                           photoDescription:photoDescription url:photoURL];
   return photoData;
 }
 

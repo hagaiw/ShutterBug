@@ -7,9 +7,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CellData ()
 
-/// Writable extensions of the value class's proeprties:
+/// The name of the \c UITableView section to which the cell belongs.
 @property (strong, readwrite, nonatomic) NSString *section;
+
+/// The cell-title's text.
 @property (strong, readwrite, nonatomic) NSString *cellText;
+
+/// The cell-subtitle's text.
 @property (strong, readwrite, nonatomic) NSString *cellDescription;
 
 @end
@@ -20,8 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Initialization
 #pragma mark -
 
-- (instancetype)initWithSection:(NSString *)section
-                       cellText:(NSString *)cellText
+- (instancetype)initWithSection:(NSString *)section cellText:(NSString *)cellText
                 cellDescription:(NSString *)cellDescription {
   if (self = [super init]) {
     self.section = section;
@@ -51,21 +54,28 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 - (BOOL)isEqual:(id)object {
+  
+  if(self == object) {
+    return YES;
+  }
+  
   CellData *otherCell = (CellData *)object;
-  if (self.section && ![self.section isEqualToString:otherCell.section]) {
-    return NO;
-  }
-  if (self.cellText && ![self.cellText isEqualToString:otherCell.cellText]) {
-    return NO;
-  }
-  if (self.cellDescription && ![self.cellDescription isEqualToString:otherCell.cellDescription]) {
+  if ((![self isKindOfClass:[object class]])
+      || (self.section && ![self.section isEqualToString:otherCell.section])
+      || (self.cellText && ![self.cellText isEqualToString:otherCell.cellText])
+      || (self.cellDescription && ![self.cellDescription isEqualToString:otherCell.cellDescription])
+      ){
     return NO;
   }
   return YES;
 }
 
-- (NSComparisonResult)compare:(CellData *)otherObject {
-  return [self.cellText compare:otherObject.cellText];
+- (NSUInteger)hash {
+  return [self.section hash] ^ [self.cellText hash] ^ [self.cellDescription hash];
+}
+
+- (NSComparisonResult)compare:(CellData *)cellData {
+  return [self.cellText compare:cellData.cellText];
 }
 
 @end

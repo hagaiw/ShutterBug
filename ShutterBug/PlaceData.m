@@ -4,10 +4,13 @@
 #import "PlaceData.h"
 
 NS_ASSUME_NONNULL_BEGIN
+
 @interface PlaceData ()
 
-/// Writable extensions of the value class's proeprties:
+// The name of the place as received from flickr.
 @property (strong, readwrite, nonatomic) NSString *name;
+
+// The Flickr-ID of the place.
 @property (strong, readwrite, nonatomic) NSString *ID;
 
 @end
@@ -23,12 +26,13 @@ NS_ASSUME_NONNULL_BEGIN
                 cellDescription:(NSString * __nonnull)cellDescription
                            name:(NSString *)name
                              ID:(NSString *)ID {
-  self = [super initWithSection:section cellText:cellText cellDescription:cellDescription];
-  self.name = name;
-  self.ID = ID;
-  
+  if (self = [super initWithSection:section cellText:cellText cellDescription:cellDescription]) {
+    self.name = name;
+    self.ID = ID;
+  }
   return self;
 }
+
 @end
 
 NS_ASSUME_NONNULL_END

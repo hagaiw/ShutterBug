@@ -9,7 +9,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Downloads and parses flickr meta data to create a data structure describing a
 /// Table-View of photos at a place.
 @interface PhotosAtPlaceFlickrDownloader : FlickrDownloader
+
+// Initializes with the \c PlaceData.
 - (instancetype)initWithPlace:(PlaceData *)place;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
   PhotoArchiver *archiver = [[PhotoArchiver alloc] init];
   return [[NSDictionary alloc] initWithObjectsAndKeys:[archiver getRecentPhotos], @"Unknown", nil];
 }
-#pragma mark
+
 @end
 
 NS_ASSUME_NONNULL_END

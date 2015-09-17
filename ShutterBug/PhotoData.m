@@ -7,30 +7,35 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PhotoData ()
 
-/// Writable extensions of the value class's proeprties:
+/// The photo's title, as received from flickr.
 @property (strong, readwrite, nonatomic) NSString *title;
+
+/// The photo's description, as received from flickr.
 @property (strong, readwrite, nonatomic) NSString *photoDescription;
+
+/// The photo's URL, as received from flickr.
 @property (strong, readwrite, nonatomic) NSURL *url;
 
 @end
 
 @implementation PhotoData
 
-/// Encoding Keys:
-static const NSString *TitleKey = @"title";
-static const NSString *DescriptionKey = @"photoDescription";
-static const NSString *URLKey = @"url";
+/// Encoding key for the title parameter.
+static const NSString *kTitleKey = @"title";
+
+/// Encoding key for the description parameter.
+static const NSString *kDescriptionKey = @"photoDescription";
+
+/// Encoding key for the URL parameter.
+static const NSString *kURLKey = @"url";
 
 #pragma mark -
 #pragma mark Initialization
 #pragma mark -
 
-- (instancetype)initWithSection:(NSString *)section
-                       cellText:(NSString *)cellText
-                cellDescription:(NSString *)cellDescription
-                          title:(NSString *)title
-               photoDescription:(NSString *)photoDescription
-                            url:(NSURL *)url {
+- (instancetype)initWithSection:(NSString *)section cellText:(NSString *)cellText
+                cellDescription:(NSString *)cellDescription title:(NSString *)title
+               photoDescription:(NSString *)photoDescription url:(NSURL *)url {
   if (self = [super initWithSection:section cellText:cellText cellDescription:cellDescription]) {
     self.title = title;
     self.photoDescription = photoDescription;
@@ -40,22 +45,19 @@ static const NSString *URLKey = @"url";
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-  self = [super initWithCoder:decoder];
-  if (!self) {
-    return nil;
+  if (self = [super initWithCoder:decoder]) {
+    self.title = [decoder decodeObjectForKey:(NSString *)kTitleKey];
+    self.photoDescription = [decoder decodeObjectForKey:(NSString *)kDescriptionKey];
+    self.url = [decoder decodeObjectForKey:(NSString *)kURLKey];
   }
-  self.title = [decoder decodeObjectForKey:(NSString *)TitleKey];
-  self.photoDescription = [decoder decodeObjectForKey:(NSString *)DescriptionKey];
-  self.url = [decoder decodeObjectForKey:(NSString *)URLKey];
-  
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)encoder {
   [super encodeWithCoder:encoder];
-  [encoder encodeObject:self.title forKey:(NSString *)TitleKey];
-  [encoder encodeObject:self.photoDescription forKey:(NSString *)DescriptionKey];
-  [encoder encodeObject:self.url forKey:(NSString *)URLKey];
+  [encoder encodeObject:self.title forKey:(NSString *)kTitleKey];
+  [encoder encodeObject:self.photoDescription forKey:(NSString *)kDescriptionKey];
+  [encoder encodeObject:self.url forKey:(NSString *)kURLKey];
 }
 
 #pragma mark -
@@ -63,6 +65,9 @@ static const NSString *URLKey = @"url";
 #pragma mark -
 
 - (BOOL)isEqual:(id)object {
+  if (![object isKindOfClass:[self class]]) {
+    return NO;
+  }
   PhotoData *otherPhoto = (PhotoData *)object;
   if (![self.url isEqual:otherPhoto.url]) {
     return NO;
