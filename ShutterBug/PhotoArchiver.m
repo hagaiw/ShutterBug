@@ -17,7 +17,7 @@ static NSUInteger const kMaxRecentPhotos = 20;
 #pragma mark Interface
 #pragma mark -
 
-- (NSArray *)getRecentPhotos {
+- (NSArray *)recentPhotos {
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSMutableArray *recentPhotos = [defaults objectForKey:kRecentPhotosKey];
   NSMutableArray *recentPhotoDatas = [NSMutableArray arrayWithCapacity:recentPhotos.count];
@@ -28,7 +28,7 @@ static NSUInteger const kMaxRecentPhotos = 20;
 }
 
 - (void)addPhotoData:(PhotoData *)photoData {
-  NSArray *recentPhotos = [self getRecentPhotos];
+  NSArray *recentPhotos = [self recentPhotos];
   recentPhotos = [self getPhotosArray:recentPhotos withAddedPhoto:photoData];
   [self addPhotosToArchive:recentPhotos];
 }

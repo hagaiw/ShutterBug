@@ -54,7 +54,6 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 - (BOOL)isEqual:(id)object {
-  
   if(self == object) {
     return YES;
   }

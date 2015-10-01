@@ -8,8 +8,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// Abstract class. Represents a generic Table-View controller for a table-view with of
-/// subtitle-cells with sections.
+/// Abstract class. Represents a generic Table-View controller for a table-view
+/// with subtitle-cells.
 @interface BaseTableViewController : UITableViewController
 
 /// Abstract method. Returns the data of the cell at the given \c indexPath.

@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 - (NSDictionary *)getTableData {
-  NSURL *flickrDownloadURL = [self getDownloadURL];
+  NSURL *flickrDownloadURL = [self downloadURL];
   NSDictionary *flickrData = [self getFlickrDataFromURL:flickrDownloadURL];
   NSMutableDictionary *tableData = [[NSMutableDictionary alloc] init];
   NSArray *cellDataArray = [self cellDataArrayFromFlickrData:flickrData];
@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray *)cellDataArrayFromFlickrData:(NSDictionary *)flickrData {
   NSMutableArray *cellDataArray = [NSMutableArray arrayWithCapacity:flickrData.count];
-  NSArray* flickrDataArray = [flickrData valueForKeyPath:[self getDataDictKey]];
+  NSArray* flickrDataArray = [flickrData valueForKeyPath:[self dataDictKey]];
   for (NSDictionary *flickrData in flickrDataArray) {
     [cellDataArray addObject:[self cellDataFromFlickrData:flickrData]];
   }
@@ -46,23 +46,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray *)cellsForCellData:(CellData *)cellData inTableData:(NSDictionary *)tableData {
   NSArray *cells = tableData[cellData.section];
-  if (!cells) {
-    cells = @[];
-  }
-  return [cells arrayByAddingObject:cellData];
+  return !cells ? @[cellData] : [cells arrayByAddingObject:cellData];
 }
 
 #pragma mark -
 #pragma mark Abstract methods
 #pragma mark -
 
-- (NSURL *)getDownloadURL {
+- (NSURL *)downloadURL {
   assert(NO);
 }
 - (CellData *)cellDataFromFlickrData:(NSDictionary *)flickrData{
   assert(NO);
 }
-- (NSString *)getDataDictKey {
+- (NSString *)dataDictKey {
   assert(NO);
 }
 

@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation BaseTableViewController
 
 /// Name of the dispatch queue used to acquire table's data.
-static NSString * const queueName = @"flickr fetcher";
+static NSString * const kQueueName = @"flickr fetcher";
 
 #pragma mark -
 #pragma mark UIViewController
@@ -42,12 +42,12 @@ static NSString * const queueName = @"flickr fetcher";
 - (IBAction)updateCellData {
   [self.refreshControl beginRefreshing];
   
-  dispatch_queue_t fetchQueue = dispatch_queue_create([queueName UTF8String], NULL);
+  dispatch_queue_t fetchQueue = dispatch_queue_create([kQueueName UTF8String], NULL);
   dispatch_async(fetchQueue, ^{
-    self.tableData = [self.getFlickrGetter getTableData];
+    self.tableData = [self.flickrGetter getTableData];
     self.tableData = [self sortedCellDataFromCellData:self.tableData];
     dispatch_async(dispatch_get_main_queue(), ^{
-      [self initTableView];
+      [self updateTableView];
       [self.refreshControl endRefreshing];
     });
   });
@@ -62,8 +62,8 @@ static NSString * const queueName = @"flickr fetcher";
   return sectionToCells;
 }
 
-- (void)initTableView {
-  self.sectionTitles = [self sectionTitlesFromCellsData:_tableData];
+- (void)updateTableView {
+  self.sectionTitles = [self sectionTitlesFromCellsData:self.tableData];
   [self.tableView reloadData];
 }
 
@@ -78,12 +78,12 @@ static NSString * const queueName = @"flickr fetcher";
 
 - (UITableViewCell *)tableView:(UITableView *)sender
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:[self identifierOfReusableCell]
-                                                               forIndexPath:indexPath];
+  UITableViewCell *cell = [self.tableView
+                             dequeueReusableCellWithIdentifier:[self identifierOfReusableCell]
+                                                  forIndexPath:indexPath];
   CellData *cellData = [self getCellDataFromIndexPath:indexPath];
   cell.textLabel.text = cellData.cellText;
   cell.detailTextLabel.text = cellData.cellDescription;
-  
   return cell;
 }
 
@@ -110,10 +110,6 @@ static NSString * const queueName = @"flickr fetcher";
 #pragma mark Abstract methods
 #pragma mark -
 
-- (UITableViewCell *)cellforIndexPath:(NSIndexPath __unused *)indexPath cellData:(CellData *)cellData {
-  assert(NO);
-}
-
 - (NSArray *)sectionTitlesFromCellsData:(NSDictionary __unused *)cellsData {
   assert(NO);
 }
@@ -127,7 +123,7 @@ static NSString * const queueName = @"flickr fetcher";
   assert(NO);
 }
 
-- (id<FlickrGetter>)getFlickrGetter {
+- (id<FlickrGetter>)flickrGetter {
   assert(NO);
 }
 

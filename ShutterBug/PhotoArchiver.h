@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Returns an ordered collection of \c PhotoData objects representing the most recent photos
 /// accessed in a chronological order.
-- (NSArray *)getRecentPhotos;
+- (NSArray *)recentPhotos;
 
 /// Adds the given photo-data object to the archive.
 - (void)addPhotoData:(PhotoData *)photoData;

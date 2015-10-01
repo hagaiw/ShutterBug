@@ -8,13 +8,13 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PhotoData ()
 
 /// The photo's title, as received from flickr.
-@property (strong, readwrite, nonatomic) NSString *title;
+@property (readwrite, nonatomic) NSString *title;
 
 /// The photo's description, as received from flickr.
-@property (strong, readwrite, nonatomic) NSString *photoDescription;
+@property (readwrite, nonatomic) NSString *photoDescription;
 
 /// The photo's URL, as received from flickr.
-@property (strong, readwrite, nonatomic) NSURL *url;
+@property (readwrite, nonatomic) NSURL *url;
 
 @end
 

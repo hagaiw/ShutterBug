@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation PhotoTableViewController
 
-/// Name of segue to \cc PhotoViewController.
+/// Name of segue to \c PhotoViewController.
 static const NSString *kPhotoSelectionSegue = @"Photo Selected";
 
 /// Name of template \c UITableView cell to use.
@@ -49,6 +49,7 @@ static const NSInteger kPhotoViewControllerNavigationID = 0;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   UINavigationController *navDetail =
       self.splitViewController.viewControllers[kSplitViewControllerDetailID];
+  
   if(!navDetail) {
     return;
   }
@@ -69,11 +70,12 @@ static const NSInteger kPhotoViewControllerNavigationID = 0;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue
            withCellData:(CellData *)cellData {
-  if ([[segue identifier] isEqualToString:(NSString *)kPhotoSelectionSegue]) {
-    PhotoViewController *photoViewController = [segue destinationViewController];
-    PhotoData *photoData = (PhotoData *)cellData;
-    [self updateViewController:photoViewController fromCellData:photoData];
+  if (![[segue identifier] isEqualToString:(NSString *)kPhotoSelectionSegue]) {
+    return;
   }
+  PhotoViewController *photoViewController = [segue destinationViewController];
+  PhotoData *photoData = (PhotoData *)cellData;
+  [self updateViewController:photoViewController fromCellData:photoData];
 }
 
 @end

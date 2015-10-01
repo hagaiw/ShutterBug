@@ -6,7 +6,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// A value class. Contains the data corresponding to a single cell in a \c UITableView.
-/// The Method isEquals checks if all value strings (section, cellText, cellDescription) match.
+/// The method \c isEquals: returns \c YES if all properties declared in this header file are equal.
 @interface CellData : NSObject <NSCoding>
 
 /// Initializes with the given \c section, \c cellText and \c cellDescription.

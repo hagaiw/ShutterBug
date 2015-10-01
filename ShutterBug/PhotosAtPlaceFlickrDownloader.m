@@ -17,10 +17,10 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation PhotosAtPlaceFlickrDownloader
 
 /// Maximum number of photo-results to request for the given place.
-const NSUInteger MaxNumResults = 50;
+const NSUInteger kMaxNumResults = 50;
 
 /// Image title to show when no title is available.
-const NSString *DefaultImageTitle = @"Unknown";
+const NSString *kDefaultImageTitle = @"Unknown";
 
 #pragma mark -
 #pragma mark Initialization
@@ -37,8 +37,8 @@ const NSString *DefaultImageTitle = @"Unknown";
 #pragma mark FlickrDownloader
 #pragma mark -
 
-- (NSURL *)getDownloadURL {
-  return [FlickrFetcher URLforPhotosInPlace:self.place.ID maxResults:(int)MaxNumResults];
+- (NSURL *)downloadURL {
+  return [FlickrFetcher URLforPhotosInPlace:self.place.ID maxResults:(int)kMaxNumResults];
 }
 
 - (CellData *)cellDataFromFlickrData:(NSDictionary *)flickrData{
@@ -46,16 +46,17 @@ const NSString *DefaultImageTitle = @"Unknown";
   NSString *photoDescription = [flickrData valueForKey:FLICKR_PHOTO_DESCRIPTION];
   NSURL *photoURL = [FlickrFetcher URLforPhoto:flickrData format:FlickrPhotoFormatLarge];
   NSString *section = @"";
-  NSString *cellText = photoTitle ?: DefaultImageTitle;
+  NSString *cellText = photoTitle ?: kDefaultImageTitle;
   PhotoData *photoData = [[PhotoData alloc] initWithSection:section cellText:cellText
                                             cellDescription:photoDescription title:photoTitle
                                            photoDescription:photoDescription url:photoURL];
   return photoData;
 }
 
-- (NSString *)getDataDictKey {
+- (NSString *)dataDictKey {
   return FLICKR_RESULTS_PHOTOS;
 }
+
 @end
 
 NS_ASSUME_NONNULL_END

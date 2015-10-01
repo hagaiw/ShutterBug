@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSDictionary *)getTableData {
   PhotoArchiver *archiver = [[PhotoArchiver alloc] init];
-  return [[NSDictionary alloc] initWithObjectsAndKeys:[archiver getRecentPhotos], @"Unknown", nil];
+  return [[NSDictionary alloc] initWithObjectsAndKeys:[archiver recentPhotos], @"Unknown", nil];
 }
 
 @end

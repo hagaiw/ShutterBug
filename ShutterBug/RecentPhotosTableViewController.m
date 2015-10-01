@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark BaseTableViewController
 #pragma mark -
 
-- (id <FlickrGetter>)getFlickrGetter {
+- (id <FlickrGetter>)flickrGetter {
   return [[RecentPhotosFlickrGetter alloc] init];
 }
 
